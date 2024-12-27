@@ -1,19 +1,21 @@
-# Use an official Node.js runtime as a parent image
-FROM node:16-alpine
+# Use a Node.js base image
+FROM node:16
 
-# Set the working directory inside the container
-WORKDIR /app
+# Set the working directory
+WORKDIR /gehey_app
 
-# Copy package.json and install dependencies
-COPY package.json ./
-
+# Copy package files and install dependencies using npm
+COPY package.json package-lock.json ./
 RUN npm install
 
-# Copy the rest of the application code
+# Copy the rest of your application
 COPY . .
 
-# Expose port 5173 (default port for Vite)
-EXPOSE 5173
+# Build the React app using Vite
+RUN npm run build
 
-# Run the Vite development server
-CMD ["yarn", "dev", "--host"]
+# Install serve to serve the app
+RUN npm install -g serve
+
+# Start the app
+CMD ["serve", "-s", "dist"]
